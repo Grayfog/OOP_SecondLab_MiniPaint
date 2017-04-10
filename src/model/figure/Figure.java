@@ -1,19 +1,22 @@
-package model;
+package model.figure;
 
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
+import model.Coord;
+import model.drawer.Drawer;
 
 /**
  * Created by udmit on 01.03.2017.
  */
 public abstract class Figure {
 
-    protected Coord start;
-    protected Color color;
+    protected Coord start, end;
 
-    Figure (Coord start, Color color){
+    public final void init(Coord start, Coord end)
+    {
         this.start = start;
-        this.color = color;
+        this.end = end;
     }
 
+    public abstract Drawer getDrawer();
 }
+
+

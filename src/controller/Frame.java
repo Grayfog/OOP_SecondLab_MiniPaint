@@ -1,12 +1,13 @@
 package controller;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
-
-import java.util.ArrayList;
+import model.Coord;
+import model.figure.*;
 
 /**
  * Created by dmitry on 19.03.17.
@@ -21,9 +22,11 @@ public class Frame {
     @FXML
     private BorderPane pane;
 
-    private static ArrayList<Canvas> figure = new ArrayList<>();
+    private GraphicsContext context;
 
-    private double startPointX, startPointY;
+    private Coord startPoint;
+
+    private Figure figure;
 
     public static void setInstance(Frame instance) {Frame.instance = instance;}
 
@@ -33,20 +36,49 @@ public class Frame {
     private void initialize(){
 
         setInstance(this);
+
+        context = canvas.getGraphicsContext2D();
+
         canvas.setOnMouseMoved(e -> Frame.getInstance().coordinates.setText('\t'+"X: " + e.getX() + " Y: " + e.getY()) );
+
         canvas.setOnMousePressed( e -> {
-            startPointX = e.getX();
-            startPointY = e.getY();
+            startPoint = new Coord(e.getX(), e.getY() );
         });
+
+        canvas.setOnMouseDragged( e -> {
+            Frame.getInstance().coordinates.setText('\t'+"X: " + e.getX() + " Y: " + e.getY());
+        });
+
         canvas.setOnMouseReleased( e -> {
-            Canvas c = new Canvas(200,315);
-            c.getGraphicsContext2D().strokeLine(startPointX, startPointY, e.getX(), e.getY());
-            figure.add(c);
-            Frame.getInstance().pane.getChildren().add(c);
+            figure.init(startPoint, new Coord(e.getX(), e.getY()));
+            figure.getDrawer().draw(context);
+            //canvas.getGraphicsContext2D().strokeLine(startPointX, startPointY, e.getX(), e.getY());
+            Frame.getInstance().pane.getChildren().add(canvas);
         });
 
     }
 
-    public Label getCoordinate() {return coordinates;}
+    public void clickLineButton(ActionEvent actionEvent) {
+        figure = new Line();
+    }
 
+    public void clickCircleButton(ActionEvent actionEvent) {
+        figure = new Circle();
+    }
+
+    public void clickOvalButton(ActionEvent actionEvent) {
+        figure = new Ellipse();
+    }
+
+    public void clickSquareButton(ActionEvent actionEvent) {
+        figure = new Square();
+    }
+
+    public void clickRectangleButton(ActionEvent actionEvent) {
+        figure = new Rectangle();
+    }
+
+    public void clickTriangleButton(ActionEvent actionEvent) {
+
+    }
 }
